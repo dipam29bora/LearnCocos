@@ -114,7 +114,7 @@ void AI::CheckSection(int X1, int Y1, int X2, int Y2, int X, int Y, int pieceToC
 	{
 		if (EMPTY_PIECE == (*gridArray)[X][Y])
 		{
-			(*gridArray)[X][Y] == AI_PIECE;
+			(*gridArray)[X][Y] = AI_PIECE;
 			gridPieces[X][Y]->setTexture(O_PIECE_FILEPATH);
 			gridPieces[X][Y]->setVisible(true);
 			gridPieces[X][Y]->runAction(cocos2d::FadeIn::create(PIECE_FADE_IN_TIME));

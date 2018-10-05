@@ -4,8 +4,9 @@
 #define MAINMENUSCENE_BACKGROUND_FILEPATH "res/MainMenuBackground.png"
 #define GAMESCENE_BACKGROUND_FILEPATH "res/MainMenuBackground.png"
 
+#define FONT "res/fonts/MarkerFelt.ttf"
 
-#define SPLASHSCENE_TIME 0.05
+#define SPLASHSCENE_TIME 0.01
 #define SPLASHSCENE_TRANSITION_TIME 0.5
 
 
@@ -49,3 +50,7 @@
 
 #define STATE_AI_PLAYING 93
 #define STATE_DRAW
+
+
+#define TAG_RELEASE_CUBE_BUTTON 11
+#define TAG_OTHER_BUTTON 12

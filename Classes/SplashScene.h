@@ -13,5 +13,6 @@ public:
 
 private:
 	void SwitchToMainMenu(float dt);
+	void SwitchToPhysicsScene(float dt);
 };
 

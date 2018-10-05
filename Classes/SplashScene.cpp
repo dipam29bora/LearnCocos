@@ -5,6 +5,7 @@
 #include "HelperFiles/SonarFrameworks.h"
 #include "Definitions.h"
 #include "MainMenuScene.h"
+#include "PhysicsScene.h"
 
 USING_NS_CC;
 
@@ -41,7 +42,8 @@ bool SplashScene::init()
 	//SonarCocosHelper::GooglePlayServices::signIn();
 
 	SonarCocosHelper::UI::AddCentredBackground(SPLASHSCENE_BACKGROUND_FILEPATH, this);
-	scheduleOnce(schedule_selector(SplashScene::SwitchToMainMenu), SPLASHSCENE_TIME);
+	//scheduleOnce(schedule_selector(SplashScene::SwitchToMainMenu), SPLASHSCENE_TIME);
+	scheduleOnce(schedule_selector(SplashScene::SwitchToPhysicsScene), SPLASHSCENE_TIME);
 	
     return true;
 }
@@ -49,6 +51,13 @@ bool SplashScene::init()
 void SplashScene::SwitchToMainMenu(float dt)
 {
 	Scene *scene = MainMenuScene::createScene();
+	TransitionFade *transition = TransitionFade::create(SPLASHSCENE_TRANSITION_TIME, scene);
+	Director::getInstance()->replaceScene(transition);
+}
+
+void SplashScene::SwitchToPhysicsScene(float dt)
+{
+	Scene *scene = PhysicsScene::createScene();
 	TransitionFade *transition = TransitionFade::create(SPLASHSCENE_TRANSITION_TIME, scene);
 	Director::getInstance()->replaceScene(transition);
 }

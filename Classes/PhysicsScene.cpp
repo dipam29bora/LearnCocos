@@ -3,6 +3,7 @@
 #include "HelperFiles/SonarFrameworks.h"
 #include "Definitions.h"
 #include "MainMenuScene.h"
+#include "physics/CCPhysicsBody.h"
 
 USING_NS_CC;
 
@@ -36,9 +37,74 @@ bool PhysicsScene::init()
         return false;
     }
 	
-	//SonarCocosHelper::GooglePlayServices::signIn();
+	SonarCocosHelper::UI::AddCentredBackground(MAINMENUSCENE_BACKGROUND_FILEPATH, this);
 
+
+
+	auto SimpleLabel = Label::createWithSystemFont("Something is written here!", "Arial", 16);
+	SimpleLabel->setPosition(SonarCocosHelper::UI::GetScreenCenter());
+	this->addChild(SimpleLabel);
+
+	Button *btnSpawnCube = Button::create("", "");
+	btnSpawnCube->setTitleText("Spawn a Cube");
+	btnSpawnCube->setTitleFontSize(36);
+	btnSpawnCube->setTitleColor(Color3B::GREEN);
+	btnSpawnCube->setPosition(SonarCocosHelper::UI::GetScreenCenter()+Vec2(0,250));
+	this->addChild(btnSpawnCube);
+
+	btnSpawnCube->addTouchEventListener(CC_CALLBACK_2(PhysicsScene::TouchEvent, this));
+	btnSpawnCube->setTag(TAG_RELEASE_CUBE_BUTTON);
 	
+	Button *btnOther = Button::create("", "");
+	btnOther->setTitleText("The Other Button");
+	btnOther->setTitleFontSize(36);
+	btnOther->setTitleColor(Color3B::GREEN);
+	btnOther->setPosition(SonarCocosHelper::UI::GetScreenCenter()+Vec2(0,150));
+	this->addChild(btnOther);
+
+	btnOther->addTouchEventListener(CC_CALLBACK_2(PhysicsScene::TouchEvent, this));
+	btnOther->setTag(TAG_OTHER_BUTTON);
+	
+	
+
+
+	//auto physicsBody = PhysicsBody::createBox(Size(65.0f, 81.0f),
+	//	PhysicsMaterial(0.1f, 1.0f, 0.0f));
+	//physicsBody->setDynamic(false);
+
+	////create a sprite
+	//auto sprite = Sprite::create(X_WINNING_PIECE_FILEPATH);
+	//sprite->setPosition(SonarCocosHelper::UI::GetScreenCenter());
+	//addChild(sprite);
+
+	////apply physicsBody to the sprite
+	//sprite->addComponent(physicsBody);
+
+	////add five dynamic bodies
+	//for (int i = 0; i < 5; ++i)
+	//{
+	//	physicsBody = PhysicsBody::createBox(Size(65.0f, 81.0f),
+	//		PhysicsMaterial(0.1f, 1.0f, 0.0f));
+
+	//	//set the body isn't affected by the physics world's gravitational force
+	//	physicsBody->setGravityEnable(false);
+
+	//	//set initial velocity of physicsBody
+	//	physicsBody->setVelocity(Vec2(cocos2d::random(-500, 500),
+	//		cocos2d::random(-500, 500)));
+	//	physicsBody->setTag(99);
+
+	//	sprite = Sprite::create(X_WINNING_PIECE_FILEPATH);
+	//	sprite->setPosition(Vec2(SonarCocosHelper::UI::GetScreenCenter().x + cocos2d::random(-300, 300),
+	//		SonarCocosHelper::UI::GetScreenCenter().y + cocos2d::random(-300, 300)));
+	//	sprite->addComponent(physicsBody);
+
+	//	addChild(sprite);
+	//}
+
+
+
+
     return true;
 }
 
@@ -47,4 +113,69 @@ void PhysicsScene::SwitchToMainMenu(float dt)
 	Scene *scene = MainMenuScene::createScene();
 	TransitionFade *transition = TransitionFade::create(SPLASHSCENE_TRANSITION_TIME, scene);
 	Director::getInstance()->replaceScene(transition);
+}
+
+void PhysicsScene::TouchEvent(Ref *sender, Widget::TouchEventType type)
+{
+	Node *node = (Node*)sender;
+
+	switch (type)
+	{
+	case cocos2d::ui::Widget::TouchEventType::BEGAN:
+		break;
+	case cocos2d::ui::Widget::TouchEventType::MOVED:
+		break;
+	case cocos2d::ui::Widget::TouchEventType::ENDED:
+
+		if (TAG_RELEASE_CUBE_BUTTON == node->getTag())
+		{
+			SpawnCube();
+		}
+		else if (TAG_OTHER_BUTTON == node->getTag())
+		{
+			OtherButton();
+		}
+
+
+		break;
+	case cocos2d::ui::Widget::TouchEventType::CANCELED:
+		break;
+	default:
+		break;
+	}
+}
+
+void PhysicsScene::SpawnCube()
+{
+	//create physicsBody
+	auto physicsBody = PhysicsBody::createBox(Size(65.0f, 81.0f), PhysicsMaterial(0.1f, 1.0f, 0.0f));
+	physicsBody->setDynamic(false);
+
+	//create a sprite
+	auto sprite = Sprite::create(X_WINNING_PIECE_FILEPATH);
+	sprite->setPosition(SonarCocosHelper::UI::GetScreenCenter() + Vec2(0, 0));
+
+	//sprite will use physicxbody
+	sprite->addComponent(physicsBody);
+
+	//set initial velocity of physicsBody
+	physicsBody->setVelocity(
+				Vec2(
+					cocos2d::random(-500, 500),
+					cocos2d::random(-500, 500)
+					)
+					);
+
+
+	//add contact event listner
+	//auto contactListner = EventListenerPhysicsContact::create();
+	//contactListner->onContactBegin = CC_CALLBACK_1(onContac);
+
+}
+
+void PhysicsScene::OtherButton()
+{
+	Scene* mainmenu = MainMenuScene::createScene();
+	TransitionFade *tansition = TransitionFade::create(SPLASHSCENE_TRANSITION_TIME, mainmenu);
+	Director::getInstance()->replaceScene(mainmenu);
 }
