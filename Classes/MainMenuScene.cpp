@@ -64,7 +64,7 @@ bool MainMenuScene::init()
 	PhysSceneButton->setPosition(SonarCocosHelper::UI::GetScreenCenter() + Vec2(0, -200));
 	this->addChild(PhysSceneButton);
 
-	PhysSceneButton->addTouchEventListener(CC_CALLBACK_2(MainMenuScene));
+//	PhysSceneButton->addTouchEventListener(CC_CALLBACK_2(MainMenuScene));
 
 #pragma endregion
 
