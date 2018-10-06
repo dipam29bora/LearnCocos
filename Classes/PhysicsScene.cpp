@@ -5,13 +5,14 @@
 #include "MainMenuScene.h"
 #include "physics/CCPhysicsBody.h"
 
-USING_NS_CC;
+USING_NS_CC_EXT;
 
 Scene* PhysicsScene::createScene()
 {
     
 	//To enable physics we have to create the scene with createWithPhysics method()
 	auto scene = Scene::createWithPhysics();
+	scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
 	auto layer = PhysicsScene::create();
 	layer->setPhysicsWorld(scene->getPhysicsWorld());
@@ -39,10 +40,20 @@ bool PhysicsScene::init()
     {
         return false;
     }
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+	//creating the physics edge box around the screen
+	auto edgeBox = PhysicsBody::createEdgeBox(visibleSize, PHYSICSBODY_MATERIAL_DEFAULT, 3);
 	
+	auto edgeBoxNode = Node::create();
+	edgeBoxNode->setPosition(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y);
+	edgeBoxNode->setPhysicsBody(edgeBox);
+
+	this->addChild(edgeBoxNode);
+
+
 	SonarCocosHelper::UI::AddCentredBackground(MAINMENUSCENE_BACKGROUND_FILEPATH, this);
-
-
 
 	auto SimpleLabel = Label::createWithSystemFont("Something is written here!", "Arial", 16);
 	SimpleLabel->setPosition(SonarCocosHelper::UI::GetScreenCenter());
