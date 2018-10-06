@@ -52,37 +52,78 @@ bool PhysicsScene::init()
 
 	this->addChild(edgeBoxNode);
 
+	
+
 
 	SonarCocosHelper::UI::AddCentredBackground(MAINMENUSCENE_BACKGROUND_FILEPATH, this);
 
-	auto SimpleLabel = Label::createWithSystemFont("Something is written here!", "Arial", 16);
-	SimpleLabel->setPosition(SonarCocosHelper::UI::GetScreenCenter());
-	this->addChild(SimpleLabel);
 
-	Button *btnSpawnCube = Button::create("", "");
+	Button *btnSpawnCube = Button::create();
 	btnSpawnCube->setTitleText("Spawn a Cube");
 	btnSpawnCube->setTitleFontSize(36);
 	btnSpawnCube->setTitleColor(Color3B::GREEN);
-	btnSpawnCube->setPosition(SonarCocosHelper::UI::GetScreenCenter()+Vec2(0,250));
+	btnSpawnCube->setTitleAlignment(TextHAlignment::LEFT);
+	btnSpawnCube->setPosition(Vec2(visibleSize.width - 150, visibleSize.height - 50));
 	this->addChild(btnSpawnCube);
 
 	btnSpawnCube->addTouchEventListener(CC_CALLBACK_2(PhysicsScene::TouchEvent, this));
 	btnSpawnCube->setTag(TAG_RELEASE_CUBE_BUTTON);
 	
-	Button *btnOther = Button::create("", "");
+	Button *btnOther = Button::create();
 	btnOther->setTitleText("The Other Button");
 	btnOther->setTitleFontSize(36);
+	btnOther->setTitleAlignment(TextHAlignment::LEFT);
 	btnOther->setTitleColor(Color3B::GREEN);
-	btnOther->setPosition(SonarCocosHelper::UI::GetScreenCenter()+Vec2(0,150));
+	btnOther->setPosition(Vec2(visibleSize.width - 150, visibleSize.height - 150));
 	this->addChild(btnOther);
 
 	btnOther->addTouchEventListener(CC_CALLBACK_2(PhysicsScene::TouchEvent, this));
 	btnOther->setTag(TAG_OTHER_BUTTON);
 	
 	
+	{
+		auto physSpriteA = Sprite::create(X_WINNING_PIECE_FILEPATH);
+		physSpriteA->setPosition(Point(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y+250));
 
+
+		auto spriteBody = PhysicsBody::createBox(physSpriteA->getContentSize(), PhysicsMaterial(0, 1, 0));
+		spriteBody->setCollisionBitmask(1);
+		spriteBody->setContactTestBitmask(true);
+		physSpriteA->setPhysicsBody(spriteBody);
+
+		this->addChild(physSpriteA);
+	}
+
+	{
+		auto physSpriteB = Sprite::create(O_WINNING_PIECE_FILEPATH);
+		physSpriteB->setPosition(Point(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+
+
+		auto spriteBody = PhysicsBody::createBox(physSpriteB->getContentSize(), PhysicsMaterial(0, 1, 0));
+		spriteBody->setCollisionBitmask(2);
+		spriteBody->setContactTestBitmask(true);
+		physSpriteB->setPhysicsBody(spriteBody);
+
+		this->addChild(physSpriteB);
+	}
+
+	auto listener = EventListenerPhysicsContact::create();
+	listener->onContactBegin = CC_CALLBACK_1(PhysicsScene::onBeginCollision, this);
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
     return true;
+}
+
+bool PhysicsScene::onBeginCollision(PhysicsContact &contact)
+{
+	PhysicsBody *A = contact.getShapeA()->getBody();
+	PhysicsBody *B = contact.getShapeB()->getBody();
+
+	if ((A->getCollisionBitmask() == 1 && B->getCollisionBitmask() == 2) || A->getCollisionBitmask() == 2 && B->getCollisionBitmask() == 1)
+	{
+		CCLOG("Collision is happening");
+	}
+	return true;
 }
 
 void PhysicsScene::SwitchToMainMenu(float dt)
@@ -91,6 +132,7 @@ void PhysicsScene::SwitchToMainMenu(float dt)
 	TransitionFade *transition = TransitionFade::create(SPLASHSCENE_TRANSITION_TIME, scene);
 	Director::getInstance()->replaceScene(transition);
 }
+
 
 void PhysicsScene::TouchEvent(Ref *sender, Widget::TouchEventType type)
 {
@@ -122,31 +164,15 @@ void PhysicsScene::TouchEvent(Ref *sender, Widget::TouchEventType type)
 	}
 }
 
+
 void PhysicsScene::SpawnCube()
 {
-	//create physicsBody
-	auto physicsBody = PhysicsBody::createBox(Size(65.0f, 81.0f), PhysicsMaterial(0.1f, 1.0f, 0.0f));
-	physicsBody->setDynamic(false);
-
+	
 	//create a sprite
 	auto sprite = Sprite::create(X_WINNING_PIECE_FILEPATH);
 	sprite->setPosition(SonarCocosHelper::UI::GetScreenCenter() + Vec2(0, 0));
 
-	//sprite will use physicxbody
-	sprite->addComponent(physicsBody);
-
-	//set initial velocity of physicsBody
-	physicsBody->setVelocity(
-				Vec2(
-					cocos2d::random(-500, 500),
-					cocos2d::random(-500, 500)
-					)
-					);
-
-
-	//add contact event listner
-	//auto contactListner = EventListenerPhysicsContact::create();
-	//contactListner->onContactBegin = CC_CALLBACK_1(onContac);
+	this->addChild(sprite);
 
 }
 
