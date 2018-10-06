@@ -20,10 +20,13 @@ public:
 	void SpawnCube();
 	void OtherButton();
 
+
 private:
 	void SwitchToMainMenu(float dt);
 	void TouchEvent(Ref *sender, Widget::TouchEventType type);
 
+	cocos2d::PhysicsWorld *m_PhysWorld;
+	void setPhysicsWorld(cocos2d::PhysicsWorld *physworld) { m_PhysWorld = physworld; }
 	
 };
 

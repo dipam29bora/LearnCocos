@@ -10,9 +10,12 @@ USING_NS_CC;
 Scene* PhysicsScene::createScene()
 {
     
-	auto scene = Scene::create();
+	//To enable physics we have to create the scene with createWithPhysics method()
+	auto scene = Scene::createWithPhysics();
 
 	auto layer = PhysicsScene::create();
+	layer->setPhysicsWorld(scene->getPhysicsWorld());
+
 
 	scene->addChild(layer);
 
@@ -66,43 +69,6 @@ bool PhysicsScene::init()
 	btnOther->setTag(TAG_OTHER_BUTTON);
 	
 	
-
-
-	//auto physicsBody = PhysicsBody::createBox(Size(65.0f, 81.0f),
-	//	PhysicsMaterial(0.1f, 1.0f, 0.0f));
-	//physicsBody->setDynamic(false);
-
-	////create a sprite
-	//auto sprite = Sprite::create(X_WINNING_PIECE_FILEPATH);
-	//sprite->setPosition(SonarCocosHelper::UI::GetScreenCenter());
-	//addChild(sprite);
-
-	////apply physicsBody to the sprite
-	//sprite->addComponent(physicsBody);
-
-	////add five dynamic bodies
-	//for (int i = 0; i < 5; ++i)
-	//{
-	//	physicsBody = PhysicsBody::createBox(Size(65.0f, 81.0f),
-	//		PhysicsMaterial(0.1f, 1.0f, 0.0f));
-
-	//	//set the body isn't affected by the physics world's gravitational force
-	//	physicsBody->setGravityEnable(false);
-
-	//	//set initial velocity of physicsBody
-	//	physicsBody->setVelocity(Vec2(cocos2d::random(-500, 500),
-	//		cocos2d::random(-500, 500)));
-	//	physicsBody->setTag(99);
-
-	//	sprite = Sprite::create(X_WINNING_PIECE_FILEPATH);
-	//	sprite->setPosition(Vec2(SonarCocosHelper::UI::GetScreenCenter().x + cocos2d::random(-300, 300),
-	//		SonarCocosHelper::UI::GetScreenCenter().y + cocos2d::random(-300, 300)));
-	//	sprite->addComponent(physicsBody);
-
-	//	addChild(sprite);
-	//}
-
-
 
 
     return true;
