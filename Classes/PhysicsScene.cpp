@@ -90,9 +90,11 @@ bool PhysicsScene::init()
 		spriteBody->setCollisionBitmask(1);
 		spriteBody->setContactTestBitmask(true);
 		spriteBody->setGravityEnable(false);
-		spriteBody->setVelocity(Vec2(45, 45));
-		spriteBody->setAngularVelocity(75);
-		
+		//spriteBody->setVelocity(Vec2(45, 45));
+		//spriteBody->setAngularVelocity(75);
+		spriteBody->applyForce(Vec2(400, 0));
+		spriteBody->applyTorque(700);
+
 		physSpriteA->setPhysicsBody(spriteBody);
 		
 
