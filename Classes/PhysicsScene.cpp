@@ -89,7 +89,12 @@ bool PhysicsScene::init()
 		auto spriteBody = PhysicsBody::createBox(physSpriteA->getContentSize(), PhysicsMaterial(0, 1, 0));
 		spriteBody->setCollisionBitmask(1);
 		spriteBody->setContactTestBitmask(true);
+		spriteBody->setGravityEnable(false);
+		spriteBody->setVelocity(Vec2(45, 45));
+		spriteBody->setAngularVelocity(75);
+		
 		physSpriteA->setPhysicsBody(spriteBody);
+		
 
 		this->addChild(physSpriteA);
 	}
