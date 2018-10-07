@@ -28,6 +28,14 @@ private:
 	cocos2d::PhysicsWorld *m_PhysWorld;
 	void setPhysicsWorld(cocos2d::PhysicsWorld *physworld) { m_PhysWorld = physworld; }
 	bool onBeginCollision(PhysicsContact &contact);
+
+
+	//Keyboard Inputs
+	void KeyPressed(EventKeyboard::KeyCode keycode, Event *event);
+	void KeyReleased(EventKeyboard::KeyCode keycode, Event *event);
+
+	//Mouse Inputs
+	void MouseInputs(EventMouse m_event, Event *event);
 	
 };
 

@@ -4,6 +4,9 @@
 #include "Definitions.h"
 #include "MainMenuScene.h"
 #include "physics/CCPhysicsBody.h"
+#include "base/CCEventDispatcher.h"
+#include <string>
+#include <iostream>
 
 USING_NS_CC_EXT;
 
@@ -109,7 +112,9 @@ bool PhysicsScene::init()
 		auto spriteBody = PhysicsBody::createBox(physSpriteB->getContentSize(), PhysicsMaterial(0, 1, 0));
 		spriteBody->setCollisionBitmask(2);
 		spriteBody->setContactTestBitmask(true);
+
 		physSpriteB->setPhysicsBody(spriteBody);
+
 
 		this->addChild(physSpriteB);
 	}
@@ -117,6 +122,31 @@ bool PhysicsScene::init()
 	auto listener = EventListenerPhysicsContact::create();
 	listener->onContactBegin = CC_CALLBACK_1(PhysicsScene::onBeginCollision, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+
+	auto KeyboardListner = EventListenerKeyboard::create();
+	KeyboardListner->onKeyPressed = CC_CALLBACK_2(PhysicsScene::KeyPressed, this);
+	KeyboardListner->onKeyReleased = CC_CALLBACK_2(PhysicsScene::KeyReleased, this);
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(KeyboardListner, this);
+
+	//Mouse Input
+	auto MouseListner = EventListenerMouse::create();
+	MouseListner->onMouseDown = [](cocos2d::Event* event)
+	{
+		try
+		{
+			EventMouse* mouseEvent = dynamic_cast<EventMouse*>(event);
+			mouseEvent->getMouseButton();
+		//http://www.gamefromscratch.com/post/2014/10/03/Cocos2d-x-Tutorial-Series-Handling-Touch-and-Mouse-Input.aspx
+			cocos2d::log("Button : %s  pressed ", mouseEvent->getMouseButton());
+			/*
+				mouseEvent->getLocation().x << "," << mouseEvent->getLocation().y << ")";
+			MessageBox(message.str().c_str(), "Mouse Event Details");*/
+		}
+		catch (std::bad_cast& e)
+		{
+			return;
+		}
+	};
 
     return true;
 }
@@ -131,6 +161,28 @@ bool PhysicsScene::onBeginCollision(PhysicsContact &contact)
 		CCLOG("Collision is happening");
 	}
 	return true;
+}
+
+void PhysicsScene::KeyPressed(EventKeyboard::KeyCode keycode, Event *event)
+{
+	if (keycode == EventKeyboard::KeyCode::KEY_W)
+	{
+		CCLOG("W is pressed");
+	}
+}
+
+void PhysicsScene::KeyReleased(EventKeyboard::KeyCode keycode, Event *event)
+{
+	if (keycode == EventKeyboard::KeyCode::KEY_W)
+	{
+		CCLOG("W is released");
+	}
+
+}
+
+void PhysicsScene::MouseInputs(EventMouse m_event, Event *event)
+{
+	CCLOG("Mouse x : %s", m_event.getCursorX());
 }
 
 void PhysicsScene::SwitchToMainMenu(float dt)
