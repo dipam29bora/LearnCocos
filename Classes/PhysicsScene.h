@@ -35,7 +35,7 @@ private:
 	void KeyReleased(EventKeyboard::KeyCode keycode, Event *event);
 
 	//Mouse Inputs
-	void MouseInputs(EventMouse m_event, Event *event);
+	void MouseMove(EventMouse* event);
 	
 };
 

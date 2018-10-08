@@ -7,8 +7,9 @@
 #include "base/CCEventDispatcher.h"
 #include <string>
 #include <iostream>
+#include <ostream>
 
-USING_NS_CC_EXT;
+USING_NS_CC;
 
 Scene* PhysicsScene::createScene()
 {
@@ -108,13 +109,11 @@ bool PhysicsScene::init()
 		auto physSpriteB = Sprite::create(O_WINNING_PIECE_FILEPATH);
 		physSpriteB->setPosition(Point(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 
-
 		auto spriteBody = PhysicsBody::createBox(physSpriteB->getContentSize(), PhysicsMaterial(0, 1, 0));
 		spriteBody->setCollisionBitmask(2);
 		spriteBody->setContactTestBitmask(true);
 
 		physSpriteB->setPhysicsBody(spriteBody);
-
 
 		this->addChild(physSpriteB);
 	}
@@ -130,23 +129,27 @@ bool PhysicsScene::init()
 
 	//Mouse Input
 	auto MouseListner = EventListenerMouse::create();
-	MouseListner->onMouseDown = [](cocos2d::Event* event)
+	MouseListner->onMouseMove = CC_CALLBACK_1(PhysicsScene::MouseMove, this);
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(MouseListner, this);
+
+	/*MouseListner->onMouseDown = [](cocos2d::Event* event)
 	{
 		try
 		{
 			EventMouse* mouseEvent = dynamic_cast<EventMouse*>(event);
 			mouseEvent->getMouseButton();
-		//http://www.gamefromscratch.com/post/2014/10/03/Cocos2d-x-Tutorial-Series-Handling-Touch-and-Mouse-Input.aspx
-			cocos2d::log("Button : %s  pressed ", mouseEvent->getMouseButton());
-			/*
-				mouseEvent->getLocation().x << "," << mouseEvent->getLocation().y << ")";
-			MessageBox(message.str().c_str(), "Mouse Event Details");*/
+		
+			std::stringstream message;
+
+				message<< mouseEvent->getLocation().x << "," << mouseEvent->getLocation().y << ")";
+			MessageBox(message.str().c_str(), "Mouse Event Details");
+
 		}
 		catch (std::bad_cast& e)
 		{
 			return;
 		}
-	};
+	};*/
 
     return true;
 }
@@ -180,9 +183,14 @@ void PhysicsScene::KeyReleased(EventKeyboard::KeyCode keycode, Event *event)
 
 }
 
-void PhysicsScene::MouseInputs(EventMouse m_event, Event *event)
+
+
+void PhysicsScene::MouseMove(EventMouse* event)
 {
-	CCLOG("Mouse x : %s", m_event.getCursorX());
+	std::stringstream message;
+	message << event->getLocation().x << "," << event->getLocation().y << ")";
+	MessageBox(message.str().c_str(), "Mouse Event Details");
+	//CCLOG("Mouse X %s ", event->getCursorX());
 }
 
 void PhysicsScene::SwitchToMainMenu(float dt)
